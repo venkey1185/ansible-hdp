@@ -36,6 +36,8 @@ database_options:
   streamline_db_name: 'streamline'
   streamline_db_username: 'streamline'
   streamline_db_password: 'streamline'
+  superset_db_username: 'superset'
+  superset_db_password: 'superset'
 
 ##########################
 ## ranger configuration ##                                      # only useful if blueprint is dynamic
