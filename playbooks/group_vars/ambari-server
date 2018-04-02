@@ -47,7 +47,6 @@ ranger_options:                                                 # only used if R
   ranger_admin_password: 'admin'                                # the password for the Ranger admin users (both admin and amb_ranger_admin)
   enable_plugins: yes                                           # set to 'yes' if the plugins should be enabled for all of the installed services
 
-
 #############################
 ## blueprint configuration ##
 #############################
@@ -58,54 +57,51 @@ blueprint_dynamic:                                              # properties for
   - role: "hdp-master"
     clients: ['SPARK2_CLIENT','TEZ_CLIENT','OOZIE_CLIENT','SPARK_CLIENT','HDFS_CLIENT','FALCON_CLIENT','HBASE_CLIENT','ZOOKEEPER_CLIENT','HCAT','INFRA_SOLR_CLIENT','ACCUMULO_CLIENT','YARN_CLIENT','MAPREDUCE2_CLIENT','ATLAS_CLIENT','HIVE_CLIENT','SLIDER','PIG','SQOOP','HST_AGENT','ACCUMULO_TSERVER']
     services:
-      - NODEMANAGER
-      - RANGER_TAGSYNC
-      - DRUID_HISTORICAL
-      - DRUID_BROKER
-      - HIVE_METASTORE
-      - KNOX_GATEWAY
-      - SPARK2_JOBHISTORYSERVER
-      - KAFKA_BROKER
-      - DRUID_COORDINATOR
-      - ACCUMULO_TRACER
-      - HST_SERVER
-      - HISTORYSERVER
-      - ZEPPELIN_MASTER
-      - DRUID_OVERLORD
-      - ACTIVITY_EXPLORER
-      - AMBARI_SERVER
-      - FALCON_SERVER
-      - LOGSEARCH_LOGFEEDER
-      - SPARK_JOBHISTORYSERVER
-      - APP_TIMELINE_SERVER
-      - RANGER_KMS_SERVER
-      - RESOURCEMANAGER
-      - DRUID_MIDDLEMANAGER
-      - DRUID_ROUTER
-      - METRICS_MONITOR
-      - ACCUMULO_GC
-      - HBASE_MASTER
-      - ATLAS_SERVER
-      - ZOOKEEPER_SERVER
-      - DRPC_SERVER
-      - MAHOUT
-      - ACCUMULO_MONITOR
-      - STORM_UI_SERVER
-      - NAMENODE
-      - NIMBUS
-      - SUPERSET
-      - ACCUMULO_MASTER
-      - INFRA_SOLR
-      - OOZIE_SERVER
-      - SECONDARY_NAMENODE
-	  - ACTIVITY_ANALYZER
+     - NODEMANAGER
+     - RANGER_USERSYNC
+     - HIVE_SERVER
+     - RANGER_TAGSYNC
+     - WEBHCAT_SERVER
+     - RANGER_ADMIN
+     - LOGSEARCH_LOGFEEDER
+     - HIVE_METASTORE
+     - KNOX_GATEWAY
+     - SPARK2_JOBHISTORYSERVER
+     - KAFKA_BROKER
+     - ACCUMULO_TRACER
+     - HST_SERVER
+     - HISTORYSERVER
+     - ZEPPELIN_MASTER
+     - ACTIVITY_EXPLORER
+     - AMBARI_SERVER
+     - FALCON_SERVER
+     - LOGSEARCH_LOGFEEDER
+     - SPARK_JOBHISTORYSERVER
+     - APP_TIMELINE_SERVER
+     - RESOURCEMANAGER
+     - METRICS_MONITOR
+     - ACCUMULO_GC
+     - HBASE_MASTER
+     - ATLAS_SERVER
+     - ZOOKEEPER_SERVER
+     - DRPC_SERVER
+     - MAHOUT
+     - ACCUMULO_MONITOR
+     - STORM_UI_SERVER
+     - NAMENODE
+     - NIMBUS
+     - ACCUMULO_MASTER
+     - INFRA_SOLR
+     - OOZIE_SERVER
+     - SECONDARY_NAMENODE
   - role: "hdp-slave"
     clients: ['SPARK2_CLIENT','INFRA_SOLR_CLIENT','TEZ_CLIENT','HST_AGENT','SLIDER','ACCUMULO_CLIENT','OOZIE_CLIENT','HBASE_REGIONSERVER','LIVY2_SERVER','SPARK_THRIFTSERVER','SPARK_CLIENT','YARN_CLIENT','HDFS_CLIENT','FALCON_CLIENT','MAPREDUCE2_CLIENT','ATLAS_CLIENT','HBASE_CLIENT','HIVE_CLIENT','PHOENIX_QUERY_SERVER','ZOOKEEPER_CLIENT','PIG','SQOOP','HCAT']
     services:
       - DATANODE
       - NODEMANAGER
       - METRICS_MONITOR
-	  - SPARK2_THRIFTSERVER
-	  - METRICS_MONITOR
-	  - METRICS_COLLECTOR
-	  - SUPERVISOR
+      - SPARK2_THRIFTSERVER
+      - METRICS_MONITOR
+      - METRICS_COLLECTOR
+      - SUPERVISOR
+      - LOGSEARCH_LOGFEEDER
