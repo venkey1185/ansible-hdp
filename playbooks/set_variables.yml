@@ -16,6 +16,8 @@
       set_fact:
         namenode_groups: []
         resourcemanager_groups: []
+        rangerkms_groups: []
+        superset: []
         journalnode_groups: []
         zookeeper_groups: []
         zookeeper_hosts: []
@@ -26,6 +28,8 @@
         streamline_hosts: []
         registry_hosts: []
         hdf_hosts: []
+        rangerkms_hosts: []
+        superset_hosts: []
         install_hdp: False
         install_hdf: False
 
