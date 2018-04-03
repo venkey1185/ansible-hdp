@@ -87,6 +87,17 @@
         msg: Schema could not be loaded. Error is {{ import_results.msg }}!
       when: import_results|failed and not import_results.msg|search("Table .* already exists")
 
+    - name: Download je-5.0.73.jar for Falcon Startup
+      shell: curl -o /usr/share/je-5.0.73.jar http://search.maven.org/remotecontent?filepath=com/sleepycat/je/5.0.73/je-5.0.73.jar
+      args:
+        chdir: /usr/share
+    
+    - name: Modify permission to je.jar
+      shell: chmod 644 /usr/share/je-5.0.73.jar
+	  
+    - name: Configure Ambari to Berkeley DB for Falcon
+      shell: ambari-server setup --jdbc-db=bdb --jdbc-driver=/usr/share/je-5.0.73.jar
+
     - name: Configure the Ambari JDBC driver
       shell: /usr/sbin/ambari-server setup --jdbc-db={{ database | regex_replace('mariadb', 'mysql') }} --jdbc-driver={{ hostvars[inventory_hostname][database + '_jdbc_location'] }}
       notify: Restart ambari-server
