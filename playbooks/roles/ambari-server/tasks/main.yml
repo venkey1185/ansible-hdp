@@ -94,7 +94,7 @@
     
     - name: Modify permission to je.jar
       shell: chmod 644 /usr/share/je-5.0.73.jar
-	  
+  
     - name: Configure Ambari to Berkeley DB for Falcon
       shell: ambari-server setup --jdbc-db=bdb --jdbc-driver=/usr/share/je-5.0.73.jar
 
