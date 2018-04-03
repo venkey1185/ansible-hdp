@@ -377,7 +377,7 @@
 	},
 	{
       "activity-zeppelin-shiro" : {
-        "users.admin" : "admin"
+        "users.admin" : "{{ smartsense_options.shiro_admin_password}}"
        }
     },
 	{
@@ -530,6 +530,11 @@
         "hbase.client.retries.number" : "35"
       }
     },
+	{
+      "capacity-scheduler" : {
+          "yarn.scheduler.capacity.maximum-am-resource-percent" : "0.5",
+        }
+    },
     {
       "core-site": {
         {% if namenode_groups|length > 1 -%}
@@ -557,12 +562,27 @@
         "storm.zookeeper.retry.intervalceiling.millis" : "30000"
       }
     },
-    {
-      "kafka-broker": {
-{% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
+	{
+	"kafka-broker" : {
+        "properties_attributes" : {
+          "final" : {
+            "log.retention.hours" : "true",
+            "advertised.host.name" : "true",
+            "host.name" : "true",
+            "advertised.port" : "true"
+          }
+        },
+        "properties" : {
+          "advertised.host.name" : "{{ master_public_ip }}",
+          "host.name" : "0.0.0.0",
+          "port" : "6667",
+          "listeners" : "PLAINTEXT://0.0.0.0:6667",
+          "advertised.port" : "6667",
+		  {% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
         "authorizer.class.name" : "org.apache.ranger.authorization.kafka.authorizer.RangerKafkaAuthorizer",
 {% endif %}
         "zookeeper.session.timeout.ms" : "30000"
+        }
       }
     },
     {
