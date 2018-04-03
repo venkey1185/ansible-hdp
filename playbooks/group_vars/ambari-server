@@ -36,6 +36,8 @@ database_options:
   streamline_db_name: 'streamline'
   streamline_db_username: 'streamline'
   streamline_db_password: 'streamline'
+  superset_db_name: 'superset'
+  rangerkms_db_name: 'rangerkms'
   superset_db_username: 'superset'
   superset_db_password: 'superset'
   rangerkms_db_username: 'rangerkms'
