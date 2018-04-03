@@ -6,8 +6,9 @@ cloud_config:
   ssh:
     privatekey: '~/.ssh/id_rsa'
   network:
-    name: default
-    address: '10.128.0.0/24'
+    name: hadoopvpc
+    subnet: hadoopnetwork	
+    address: '192.168.0.0/16'
 
 firewall_rules:
   - name: "{{ cloud_config.network.name }}-allow-internal"            # default firewall rule - do not change
@@ -24,7 +25,7 @@ nodes:
   - role: "hdp-master"
     count: 1
     image: centos-7
-    type: custom-8-32768
+    type: custom-4-32768
     public_ip: true
     root_disk:
       type: pd-ssd
@@ -34,7 +35,7 @@ nodes:
   - role: "hdp-slave"
     count: 2
     image: centos-7
-    type: custom-8-32768
+    type: custom-1-6656
     public_ip: true
     root_disk:
       type: pd-ssd
@@ -43,7 +44,7 @@ nodes:
   - role: "hdp-edge"
     count: 0
     image: centos-7
-    type: n1-standard-1
+    type: n1-highmem-1
     public_ip: true
     root_disk:
       type: pd-standard
