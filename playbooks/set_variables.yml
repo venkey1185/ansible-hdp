@@ -87,31 +87,31 @@
         when: groups[item.role] is defined and groups[item.role]|length > 0 and ('RANGER_ADMIN' in item.services)
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
         no_log: True
-		
-      - name: Populate the rangetkms groups list
+
+      - name: Populate the rangerkms groups list
         set_fact:
-          rangeradmin_groups: "{{ rangeradmin_groups }} + [ '{{ item.role }}' ]"
+          rangerkms_groups: "{{ rangerkms_groups }} + [ '{{ item.role }}' ]"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and ('RANGER_KMS_SERVER' in item.services)
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
         no_log: True
 
-      - name: Populate the rangetkms hosts list
+      - name: Populate the rangerkms hosts list
         set_fact:
-          rangeradmin_hosts: "{{ rangeradmin_hosts }} + {{ groups[item.role] }}"
+          rangerkms_hosts: "{{ rangerkms_hosts }} + {{ groups[item.role] }}"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and ('RANGER_KMS_SERVER' in item.services)
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
         no_log: True
 
       - name: Populate the superset groups list
         set_fact:
-          rangeradmin_groups: "{{ rangeradmin_groups }} + [ '{{ item.role }}' ]"
+          superset_groups: "{{ superset_groups }} + [ '{{ item.role }}' ]"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and ('SUPERSET' in item.services)
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
         no_log: True
 
       - name: Populate the superset hosts list
         set_fact:
-          rangeradmin_hosts: "{{ superset_hosts }} + {{ groups[item.role] }}"
+          superset_hosts: "{{ superset_hosts }} + {{ groups[item.role] }}"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and ('SUPERSET' in item.services)
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
         no_log: True
