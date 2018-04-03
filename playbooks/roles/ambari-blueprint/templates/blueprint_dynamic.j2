@@ -309,6 +309,38 @@
         "namenode_opt_newsize" : "384m"
       }
     },
+	{
+      "kms-properties" : {
+	      {% if database == "mysql" or database == "mariadb" -%}
+        "DB_FLAVOR": "MYSQL",
+        "db_user": "{{ database_options.rangerkms_db_username }}",
+        "db_password": "{{ database_options.rangerkms_db_password }}",
+        "db_name": "{{ database_options.rangerkms_db_name }}",
+		"db_host": "database_options.external_hostname",
+        {% endif -%}
+        {% if database == "postgres" -%}
+        "database_name" : "{{ database_options.rangerkms_db_name }}",
+        "DB_FLAVOR": "{POSTGRESQL}",
+        "db_user": "{{ database_options.rangerkms_db_username }}",
+        "db_password": "{{ database_options.rangerkms_db_password }}",
+        "db_name": "{{ database_options.rangerkms_db_name }}",
+		"db_host": "database_options.external_hostname",
+        {% endif -%}
+          "db_root_user" : "root",
+          "SQL_CONNECTOR_JAR" : "{{driver_curl_target}}",
+          "REPOSITORY_CONFIG_USERNAME" : "keyadmin"
+        }
+    },
+	{
+      "druid-common" : {
+          "druid.metadata.storage.connector.user" : "druid",
+          "database_name" : "druid",
+          "druid.metadata.storage.connector.port" : "1527",
+          "druid.security.extensions.loadList" : "[]",
+          "druid.metadata.storage.type" : "derby",
+          "druid.metadata.storage.connector.connectURI" : "jdbc:derby://localhost:1527/druid;create=true"
+       }
+    },
     {
       "hdfs-site" : {
         {% if namenode_groups|length > 1 -%}
