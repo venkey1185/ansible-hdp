@@ -428,7 +428,7 @@
         state: present
       with_items: "{{ rangeradmin_hosts }}"
       when: rangeradmin_hosts is defined and rangeradmin_hosts|length > 0
-      
+
     - name: Create the ranger admin  database user and IP based access (mysql)
       mysql_user:
         name: "{{ database_options.rangeradmin_db_username }}"
@@ -438,7 +438,7 @@
         state: present
       with_items: "{{ rangeradmin_hosts }}"
       when: rangeradmin_hosts is defined and rangeradmin_hosts|length > 0
-	  
+
     - name: Create the superset database (mysql)
       mysql_db:
         name: "{{ database_options.superset_db_name }}"
@@ -455,12 +455,22 @@
       with_items: "{{ superset_hosts }}"
       when: superset_hosts is defined and superset_hosts|length > 0
 
+    - name: Create the superset database user and IP based access (mysql)
+      mysql_user:
+        name: "{{ database_options.supersen_db_username }}"
+        host: "{{ hostvars[item]['ansible_'~hostvars[item].ansible_default_ipv4.alias]['ipv4']['address'] }}"
+        priv: "{{ database_options.superset_db_name }}.*:ALL"
+        password: "{{ database_options.superset_db_password }}"
+        state: present
+      with_items: "{{ superset_hosts }}"
+      when: superset_hosts is defined and superset_hosts|length > 0
+
     - name: Create the rangerkms database (mysql)
       mysql_db:
         name: "{{ database_options.rangerkms_db_name }}"
         state: present
       when: rangerkms_hosts is defined and rangerkms_hosts|length > 0
-	  
+
     - name: Create the rangerkms database user and host based access (mysql)
       mysql_user:
         name: "{{ database_options.rangerkms_db_username }}"
@@ -470,7 +480,7 @@
         state: present
       with_items: "{{ rangerkms_hosts }}"
       when: rangerkms_hosts is defined and rangerkms_hosts|length > 0
-	  
+
     - name: Create the rangerkms database user and IP based access (mysql)
       mysql_user:
         name: "{{ database_options.rangerkms_db_username }}"
@@ -479,7 +489,7 @@
         password: "{{ database_options.rangerkms_db_password }}"
         state: present
       with_items: "{{ rangerkms_hosts }}"
-      when: rangerkms_hosts is defined and rangeradmin_hosts|length > 0
+      when: rangerkms_hosts is defined and rangerkms_hosts|length > 0
 
     - name: Create the registry database (mysql)
       mysql_db:
