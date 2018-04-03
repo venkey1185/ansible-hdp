@@ -311,20 +311,20 @@
     },
 	{
       "kms-properties" : {
-	      {% if database == "mysql" or database == "mariadb" -%}
+	    {% if database == "mysql" or database == "mariadb" -%}
         "DB_FLAVOR": "MYSQL",
         "db_user": "{{ database_options.rangerkms_db_username }}",
         "db_password": "{{ database_options.rangerkms_db_password }}",
         "db_name": "{{ database_options.rangerkms_db_name }}",
-		"db_host": "database_options.external_hostname",
+		"db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}",
         {% endif -%}
         {% if database == "postgres" -%}
         "database_name" : "{{ database_options.rangerkms_db_name }}",
-        "DB_FLAVOR": "{POSTGRESQL}",
+        "DB_FLAVOR": "POSTGRES",
         "db_user": "{{ database_options.rangerkms_db_username }}",
         "db_password": "{{ database_options.rangerkms_db_password }}",
         "db_name": "{{ database_options.rangerkms_db_name }}",
-		"db_host": "database_options.external_hostname",
+		"db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}",
         {% endif -%}
           "db_root_user" : "root",
           "SQL_CONNECTOR_JAR" : "{{driver_curl_target}}",
@@ -365,6 +365,38 @@
         "dfs.replication" : "3"
       }
     },
+	{
+      "superset-env" : {
+	    "superset_admin_lastname" : "Admin",
+        "superset_pid_dir" : "/var/run/superset",
+        "superset_log_dir" : "/var/log/superset",
+        "superset_admin_email" : "{{ superset_email }}",
+        "superset_admin_firstname" : "Ambari",
+        "superset_user" : "superset"
+		}
+	},
+	{
+      "superset" : {
+	    {% if database == "mysql" or database == "mariadb" -%}
+        "SUPERSET_DATABASE_TYPE": "mysql",
+        "SUPERSET_DATABASE_USER": "{{ database_options.superset_db_username }}",
+        "SUPERSET_DATABASE_PASSWORD": "{{ database_options.superset_db_password }}",
+        "SUPERSET_DATABASE_NAME": "{{ database_options.superset_db_name }}",
+		"SUPERSET_DATABASE_PORT": "{{ mysql_port }}",
+		"SUPERSET_DATABASE_HOSTNAME": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}"
+        {% endif -%}
+        {% if database == "postgres" -%}
+        "database_name" : "{{ database_options.superset_db_name }}",
+        "SUPERSET_DATABASE_TYPE": "postgres",
+        "SUPERSET_DATABASE_USER": "{{ database_options.superset_db_username }}",
+        "SUPERSET_DATABASE_PASSWORD": "{{ database_options.superset_db_password }}",
+        "SUPERSET_DATABASE_NAME": "{{ database_options.superset_db_name }}",
+		"SUPERSET_DATABASE_HOSTNAME": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}",
+		"SUPERSET_DATABASE_PORT": "{{ postgres_port }}"
+        {% endif -%}
+	    
+		}
+	}, 
     {
       "yarn-site" : {
         {% if resourcemanager_groups|length > 1 -%}
