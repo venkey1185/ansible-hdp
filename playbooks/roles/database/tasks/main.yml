@@ -457,7 +457,7 @@
 
     - name: Create the superset database user and IP based access (mysql)
       mysql_user:
-        name: "{{ database_options.supersen_db_username }}"
+        name: "{{ database_options.superset_db_username }}"
         host: "{{ hostvars[item]['ansible_'~hostvars[item].ansible_default_ipv4.alias]['ipv4']['address'] }}"
         priv: "{{ database_options.superset_db_name }}.*:ALL"
         password: "{{ database_options.superset_db_password }}"
