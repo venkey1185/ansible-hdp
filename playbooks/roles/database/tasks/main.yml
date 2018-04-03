@@ -444,7 +444,7 @@
         name: "{{ database_options.superset_db_name }}"
         state: present
       when: superset_hosts is defined and superset_hosts|length > 0
-	  
+
     - name: Create the superset database user and host based access (mysql)
       mysql_user:
         name: "{{ database_options.superset_db_username }}"
