@@ -106,7 +106,7 @@
         registry_db_password_md5: "md5{{ (database_options.registry_db_password~database_options.registry_db_username) | hash('md5') }}"
         streamline_db_password_md5: "md5{{ (database_options.streamline_db_password~database_options.streamline_db_username) | hash('md5') }}"
         superset_db_password_md5: "md5{{ (database_options.superset_db_password~database_options.superset_db_username) | hash('md5') }}"
-		rangerkms_db_password_md5: "md5{{ (database_options.rangerkms_db_password~database_options.rangerkms_db_username) | hash('md5') }}"
+        rangerkms_db_password_md5: "md5{{ (database_options.rangerkms_db_password~database_options.rangerkms_db_username) | hash('md5') }}"
 
     - name: Create the ambari database user (postgres)
       shell: su - postgres -c "psql -c \"CREATE ROLE {{ database_options.ambari_db_username }} ENCRYPTED PASSWORD '{{ ambari_db_password_md5 }}' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;\""
@@ -429,6 +429,22 @@
       with_items: "{{ rangeradmin_hosts }}"
       when: rangeradmin_hosts is defined and rangeradmin_hosts|length > 0
       
+    - name: Create the ranger admin  database user and IP based access (mysql)
+      mysql_user:
+        name: "{{ database_options.rangeradmin_db_username }}"
+        host: "{{ hostvars[item]['ansible_'~hostvars[item].ansible_default_ipv4.alias]['ipv4']['address'] }}"
+        priv: "{{ database_options.rangeradmin_db_name }}.*:ALL"
+        password: "{{ database_options.rangeradmin_db_password }}"
+        state: present
+      with_items: "{{ rangeradmin_hosts }}"
+      when: rangeradmin_hosts is defined and rangeradmin_hosts|length > 0
+	  
+    - name: Create the superset database (mysql)
+      mysql_db:
+        name: "{{ database_options.superset_db_name }}"
+        state: present
+      when: superset_hosts is defined and superset_hosts|length > 0
+	  
     - name: Create the superset database user and host based access (mysql)
       mysql_user:
         name: "{{ database_options.superset_db_username }}"
@@ -439,7 +455,23 @@
       with_items: "{{ superset_hosts }}"
       when: superset_hosts is defined and superset_hosts|length > 0
 
-    - name: Create the ranger kms database user and IP based access (mysql)
+    - name: Create the rangerkms database (mysql)
+      mysql_db:
+        name: "{{ database_options.rangerkms_db_name }}"
+        state: present
+      when: rangerkms_hosts is defined and rangerkms_hosts|length > 0
+	  
+    - name: Create the rangerkms database user and host based access (mysql)
+      mysql_user:
+        name: "{{ database_options.rangerkms_db_username }}"
+        host: "{{ hostvars[item]['ansible_fqdn'] }}"
+        priv: "{{ database_options.rangerkms_db_name }}.*:ALL"
+        password: "{{ database_options.rangerkms_db_password }}"
+        state: present
+      with_items: "{{ rangerkms_hosts }}"
+      when: rangerkms_hosts is defined and rangerkms_hosts|length > 0
+	  
+    - name: Create the rangerkms database user and IP based access (mysql)
       mysql_user:
         name: "{{ database_options.rangerkms_db_username }}"
         host: "{{ hostvars[item]['ansible_'~hostvars[item].ansible_default_ipv4.alias]['ipv4']['address'] }}"
