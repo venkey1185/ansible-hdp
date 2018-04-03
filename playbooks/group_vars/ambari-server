@@ -50,10 +50,10 @@ ranger_options:                                                 # only used if R
   enable_plugins: yes                                           # set to 'yes' if the plugins should be enabled for all of the installed services
 
 superset_options:
-  superset_email: 'ambariadmin@hitachiconsulting.com'			# Only used for Superset admin email (superset_admin_email)
+  superset_email: 'ambariadmin@hitachiconsulting.com'	          # Only used for Superset admin email (superset_admin_email)
   
 smartsense_options:
-  shiro_admin_password: 'admin'								# Only used for smartsense 'admin' user
+  shiro_admin_password: 'admin'                                 # Only used for smartsense 'admin' user
 #############################
 ## blueprint configuration ##
 #############################
