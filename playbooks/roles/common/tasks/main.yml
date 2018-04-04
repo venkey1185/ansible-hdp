@@ -117,6 +117,55 @@
 
 - meta: flush_handlers
 
+- name: Create ambari user
+  user: name=ambari groups=wheel
+  state: present 
+
+- name: Provide sudoer privileges to ambari
+  lineinfile:
+    dest: /etc/sudoers
+    insertafter: '^root*'
+    line: 'ambari ALL=(ALL) NOPASSWD:SETENV: ALL'
+
+- name: Provide sudoer privileges to ambari
+  lineinfile:
+    dest: /etc/sudoers
+    insertafter: '^# Defaults specification'
+    line: 'Defaults exempt_group = ambari'
+
+- name: Provide sudoer privileges to ambari
+  lineinfile:
+    dest: /etc/sudoers
+    insertafter: '^# Defaults specification'
+    line: 'Defaults !env_reset,env_delete-=PATH'
+
+- name: Provide sudoer privileges to ambari
+  lineinfile:
+    dest: /etc/sudoers
+    insertafter: '^# Defaults specification'
+    line: 'Defaults: ambari !requiretty'
+
+- name: Create HDP base directory
+  file:
+    path: /usr/hdp/2.6.0.3-8
+    state: directory
+    owner: root
+    group: root
+    mode: 0777
+
+- name: Create softlink to base
+  file:
+   src: "/usr/hdp/2.6.0.3-8"
+   dest: "/usr/hdp/2.6"
+   state: link
+
+- name: Make Spark as Default version & Update Java path
+  lineinfile:
+    dest: /etc/profile
+    state: present
+    line: 'export SPARK_MAJOR_VERSION=2; export PATH=$PATH:/usr/jdk64/jdk1.8.0_112/bin'
+  when: (ansible_os_family|lower == "redhat" and ansible_distribution_major_version|int == 7) or (ansible_os_family|lower == "debian" and ansible_distribution_major_version|int >= 7) or (ansible_os_family|lower == "suse" and ansible_distribution_major_version|int == 12)
+
 - name: Configure tuned (RHEL/CentOS 7)
   include: tuned.yml
   when: ansible_os_family|lower == "redhat" and ansible_distribution_major_version|int == 7

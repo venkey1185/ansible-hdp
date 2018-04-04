@@ -1,5 +1,5 @@
 ---
-cluster_name: 'gcp1'
+cluster_name: 'gcp'
 
 ambari_version: '2.6.0.0'                                 # must be the 4-part full version number
 hdp_version: '2.6.3.0'                                    # must be the 4-part full version number

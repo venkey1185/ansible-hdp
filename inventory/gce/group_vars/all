@@ -7,7 +7,7 @@ cloud_config:
     privatekey: '~/.ssh/id_rsa'
   network:
     name: hadoopvpc
-    subnet: hadoopnetwork	
+    subnet: hadoopnetwork
     address: '192.168.0.0/16'
 
 firewall_rules:
@@ -25,11 +25,11 @@ nodes:
   - role: "hdp-master"
     count: 1
     image: centos-7
-    type: custom-4-32768
+    type: custom-4-26624
     public_ip: true
     root_disk:
       type: pd-ssd
-      size: 100
+      size: 20
     ambari_server: true
 
   - role: "hdp-slave"
@@ -39,7 +39,7 @@ nodes:
     public_ip: true
     root_disk:
       type: pd-ssd
-      size: 100
+      size: 20
 
   - role: "hdp-edge"
     count: 0

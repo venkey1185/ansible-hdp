@@ -316,7 +316,7 @@
         "db_user": "{{ database_options.rangerkms_db_username }}",
         "db_password": "{{ database_options.rangerkms_db_password }}",
         "db_name": "{{ database_options.rangerkms_db_name }}",
-		"db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}",
+	"db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}",
         {% endif -%}
         {% if database == "postgres" -%}
         "database_name" : "{{ database_options.rangerkms_db_name }}",
@@ -324,10 +324,13 @@
         "db_user": "{{ database_options.rangerkms_db_username }}",
         "db_password": "{{ database_options.rangerkms_db_password }}",
         "db_name": "{{ database_options.rangerkms_db_name }}",
-		"db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}",
+	"db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ postgres_port }}",
         {% endif -%}
-          "db_root_user" : "root",
-          "SQL_CONNECTOR_JAR" : "{{driver_curl_target}}",
+        "ranger.ks.jpa.jdbc.url": "jdbc:mysql://{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}/{{ database_options.rangerkms_db_name }}",
+        "db_root_user": "root",
+        "db_root_password": "",
+          "KMS_MASTER_KEY_PASSWD": "kmsadmin123",
+          "SQL_CONNECTOR_JAR" : "/usr/share/java/mysql-connector-java.jar",
           "REPOSITORY_CONFIG_USERNAME" : "keyadmin"
         }
     },
@@ -338,6 +341,9 @@
           "druid.metadata.storage.connector.port" : "1527",
           "druid.security.extensions.loadList" : "[]",
           "druid.metadata.storage.type" : "derby",
+          "druid.storage.storageDirectory" : "/apps/druid/warehouse",
+          "druid.indexer.logs.type" : "hdfs",
+          "druid.indexer.logs.directory" : "/user/druid/logs",
           "druid.metadata.storage.connector.connectURI" : "jdbc:derby://localhost:1527/druid;create=true"
        }
     },
@@ -532,7 +538,7 @@
     },
 	{
       "capacity-scheduler" : {
-          "yarn.scheduler.capacity.maximum-am-resource-percent" : "0.5",
+          "yarn.scheduler.capacity.maximum-am-resource-percent" : "0.5"
         }
     },
     {
@@ -562,27 +568,17 @@
         "storm.zookeeper.retry.intervalceiling.millis" : "30000"
       }
     },
-	{
-	"kafka-broker" : {
-        "properties_attributes" : {
-          "final" : {
-            "log.retention.hours" : "true",
-            "advertised.host.name" : "true",
-            "host.name" : "true",
-            "advertised.port" : "true"
-          }
-        },
-        "properties" : {
-          "advertised.host.name" : "{{ master_public_ip }}",
+    {
+      "kafka-broker" : {
+         "advertised.host.name" : "{{ public_ip }}",
           "host.name" : "0.0.0.0",
           "port" : "6667",
           "listeners" : "PLAINTEXT://0.0.0.0:6667",
           "advertised.port" : "6667",
-		  {% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
+          {% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
         "authorizer.class.name" : "org.apache.ranger.authorization.kafka.authorizer.RangerKafkaAuthorizer",
-{% endif %}
+         {% endif %}
         "zookeeper.session.timeout.ms" : "30000"
-        }
       }
     },
     {

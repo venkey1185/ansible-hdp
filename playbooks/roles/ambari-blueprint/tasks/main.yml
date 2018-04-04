@@ -35,6 +35,13 @@
     msg: "Registry has been requested to be installed but the database option is embedded."
   when: registry_hosts is defined and registry_hosts|length > 0 and database == 'embedded'
 
+- name: Get Public IP of Master Node
+  shell: 'curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip'
+  register: public_ip
+  ignore_errors: True
+
+- set_fact: public_ip="{{ public_ip.stdout }}"
+
 - name: Upload the blueprint and the cluster creation template
   template:
     src: "{{ item.src }}"

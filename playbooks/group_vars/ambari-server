@@ -52,10 +52,12 @@ ranger_options:                                                 # only used if R
   enable_plugins: yes                                           # set to 'yes' if the plugins should be enabled for all of the installed services
 
 superset_options:
-  superset_email: 'ambariadmin@hitachiconsulting.com'	          # Only used for Superset admin email (superset_admin_email)
+  superset_email: 'ambariadmin@hitachiconsulting.com'  
+# Only used for Superset admin email (superset_admin_email)
   
 smartsense_options:
-  shiro_admin_password: 'admin'                                 # Only used for smartsense 'admin' user
+  shiro_admin_password: 'admin'
+# Only used for smartsense 'admin' user
 #############################
 ## blueprint configuration ##
 #############################
@@ -91,7 +93,6 @@ blueprint_dynamic:                                              # properties for
      - LOGSEARCH_LOGFEEDER
      - SPARK_JOBHISTORYSERVER
      - APP_TIMELINE_SERVER
-     - RANGER_KMS_SERVER
      - RESOURCEMANAGER
      - DRUID_MIDDLEMANAGER
      - DRUID_ROUTER
@@ -106,12 +107,12 @@ blueprint_dynamic:                                              # properties for
      - STORM_UI_SERVER
      - NAMENODE
      - NIMBUS
-     - SUPERSET
      - ACCUMULO_MASTER
      - INFRA_SOLR
      - OOZIE_SERVER
      - SECONDARY_NAMENODE
      - METRICS_COLLECTOR
+     - FLUME_HANDLER
 
   - role: "hdp-slave"
     clients: ['SPARK2_CLIENT','INFRA_SOLR_CLIENT','TEZ_CLIENT','HST_AGENT','SLIDER','ACCUMULO_CLIENT','OOZIE_CLIENT','HBASE_REGIONSERVER','LIVY2_SERVER','SPARK_THRIFTSERVER','SPARK_CLIENT','YARN_CLIENT','HDFS_CLIENT','FALCON_CLIENT','MAPREDUCE2_CLIENT','ATLAS_CLIENT','HBASE_CLIENT','HIVE_CLIENT','PHOENIX_QUERY_SERVER','ZOOKEEPER_CLIENT','PIG','SQOOP','HCAT']
@@ -123,3 +124,4 @@ blueprint_dynamic:                                              # properties for
       - METRICS_MONITOR
       - SUPERVISOR
       - LOGSEARCH_LOGFEEDER
+      - ZOOKEEPER_SERVER
