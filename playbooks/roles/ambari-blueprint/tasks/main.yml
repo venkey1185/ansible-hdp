@@ -129,7 +129,7 @@
     return_content: yes
   register: cluster_check_task
   until: (((cluster_check_task.content|from_json).Requests.request_status == 'COMPLETED' and (cluster_check_task.content|from_json).Requests.completed_task_count|int > 0) or
-         (cluster_check_task.content|from_json).Requests.request_status == 'FAILED' or
+         (cluster_check_task.content|from_json).Requests.request_status == 'ABORTED' or
          (cluster_check_task.content|from_json).Requests.request_status == 'TIMEDOUT' or
          (cluster_check_task.content|from_json).Requests.request_status == 'ABORTED')
   retries: "{{ wait_timeout // 10 }}"
@@ -139,6 +139,6 @@
 - name: Fail if the cluster create task is in an error state
   fail:
     msg: "Failed to build the {{ cluster_name }} cluster. Task Status is {{ (cluster_check_task.content|from_json).Requests.request_status }}."
-  when: wait and ((cluster_check_task.content|from_json).Requests.request_status == 'FAILED' or
+  when: wait and ((cluster_check_task.content|from_json).Requests.request_status == 'ABORTED' or
          (cluster_check_task.content|from_json).Requests.request_status == 'TIMEDOUT' or
          (cluster_check_task.content|from_json).Requests.request_status == 'ABORTED')

@@ -7,7 +7,7 @@ utils_version: '1.1.0.21'                                 # set this to 1.1.0.21
 
 base_url: 'http://public-repo-1.hortonworks.com'          # change this if using a Local Repository
 
-java: 'embedded'                                          # can be set to 'embedded', 'openjdk' or 'oraclejdk'
+java: 'oraclejdk'                                          # can be set to 'embedded', 'openjdk' or 'oraclejdk'
 oraclejdk_options:                                        # only used when java is set to 'oraclejdk'
   base_folder: '/usr/java'                                # the folder where the Java package should be unpacked to
   tarball_location: '/tmp/jdk-8u131-linux-x64.tar.gz'     # the location of the tarball on the remote system or on the Ansible controller

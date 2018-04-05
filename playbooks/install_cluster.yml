@@ -3,8 +3,8 @@
 
 - include: "install_ambari.yml"
 
-- include: "configure_ambari.yml"
+#- include: "configure_ambari.yml"
 
-- include: "apply_blueprint.yml"
+#- include: "apply_blueprint.yml"
 
-- include: "post_install.yml"
+#- include: "post_install.yml"

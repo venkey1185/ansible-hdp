@@ -7,3 +7,11 @@
         group: hadoop
         mode: 0440
   when: security != "none" and security_options.http_authentication|default(false)
+
+    - name: Copy atlas properties file to hive
+      copy:
+        src: /etc/atlas/conf/atlas-application.properties
+        dest: /etc/hive/conf/atlas-application.properties
+        owner: root
+        group: root
+        mode: 0777 

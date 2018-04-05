@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export CLOUD_TO_USE=gce
 
 if [ -z "$CLOUD_TO_USE" ]; then
     echo "CLOUD_TO_USE environment variable must be set to one of the following: aws, azure, gce, openstack, static"

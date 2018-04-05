@@ -118,8 +118,10 @@
 - meta: flush_handlers
 
 - name: Create ambari user
-  user: name=ambari groups=wheel
-  state: present 
+  user:
+    name: ambari
+    groups: wheel
+    state: present
 
 - name: Provide sudoer privileges to ambari
   lineinfile:

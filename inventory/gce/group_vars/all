@@ -31,6 +31,8 @@ nodes:
       type: pd-ssd
       size: 20
     ambari_server: true
+    haddop_cluster: true
+
 
   - role: "hdp-slave"
     count: 2
@@ -40,6 +42,8 @@ nodes:
     root_disk:
       type: pd-ssd
       size: 20
+    haddop_cluster: true
+
 
   - role: "hdp-edge"
     count: 0
@@ -49,3 +53,14 @@ nodes:
     root_disk:
       type: pd-standard
       size: 20
+
+  - role: "dbhost"
+    count: 1
+    image: centos-7
+    type: n1-standard-1
+    public_ip: true
+    root_disk:
+      type: pd-ssd
+      size: 20
+    dbhost: true
+

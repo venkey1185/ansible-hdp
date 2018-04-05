@@ -1,1 +1,0 @@
-CLOUD_TO_USE environment variable must be set to one of the following: aws, azure, gce, openstack, static
