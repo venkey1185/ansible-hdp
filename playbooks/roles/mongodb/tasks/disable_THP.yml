@@ -1,0 +1,13 @@
+---
+- name: Ensure the file
+  copy:
+   src: "disable-transparent-hugepages.j2"
+   dest: "/etc/init.d/disable-transparent-hugepages"
+   mode: "0755"
+
+- name: Configure OS to run the task on boot
+  service:
+    name: "disable-transparent-hugepages"
+    state: "started"
+    enabled: "True"
+#     "sudo chkconfig --add disable-transparent-hugepages"

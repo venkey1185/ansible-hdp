@@ -1,0 +1,34 @@
+
+mongo_ops_manager_appdb: mongod-opsmanager-app
+mongo_ops_manager_appdb_conf: /etc/{{ mongo_ops_manager_appdb }}.conf
+mongo_ops_manager_appdb_dir: /data/opsmanager/data
+mongo_ops_manager_appdb_log_dir: /data/opsmanager/data/log
+mongo_ops_manager_appdb_pid_file_path: /var/run/mongodb/{{ mongo_ops_manager_appdb }}.pid
+mongo_ops_manager_appdb_port: 27017
+mongo_ops_manager_appdb_rs_name: "rsOpsMgrApp"
+mongo_ops_manager_appdb_rs_servers: "{% for host in groups['mongo-ops-manager'] %}{% if loop.index == loop.length %}{{ host }}:{{ mongo_ops_manager_appdb_port }}{% else %}{{ host }}:{{ mongo_ops_manager_appdb_port }},{% endif %}{% endfor %}"
+mongo_ops_manager_appdb_service_config: /lib/systemd/system/{{ mongo_ops_manager_appdb }}.service
+mongo_ops_manager_appdb_sslcert_path: /etc/mongodb-mms/mgomssl.pem
+
+mongo_ops_manager_backupdb: mongod-opsmanager-backup
+mongo_ops_manager_backupdb_conf: /etc/{{ mongo_ops_manager_backupdb }}.conf
+mongo_ops_manager_backupdb_dir: /data/opsmanager/backup
+mongo_ops_manager_backupdb_log_dir: /data/opsmanager/backup/log
+mongo_ops_manager_backupdb_pid_file_path: /var/run/mongodb/{{ mongo_ops_manager_backupdb }}.pid
+mongo_ops_manager_backupdb_port: 27018
+mongo_ops_manager_backupdb_rs_name: "rsOpsMgrBackup"
+mongo_ops_manager_backupdb_service_config: /lib/systemd/system/{{ mongo_ops_manager_backupdb }}.service
+
+mongo_tmp_directory: "/tmp/mongo"
+mongo_cert_script: "~/sp3-infrastructure/scripts/certreq.sh"
+
+
+mongo_ops_manager_url: "https://mgoop01.sib.net:8443"
+
+mongo_manager_ports:
+- 27017/tcp
+- 27018/tcp
+- 8443/tcp
+- 22/tcp
+
+mongo_nodes_ports:

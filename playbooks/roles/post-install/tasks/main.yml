@@ -1,17 +1,17 @@
 ---
-- block:
-    - name: Set correct permissions to the http secret key
-      file:
-        path: /etc/security/http_secret
-        owner: hdfs
-        group: hadoop
-        mode: 0440
-  when: security != "none" and security_options.http_authentication|default(false)
+ - name: Set correct permissions to the http secret key
+   file:
+    path: /etc/security/http_secret
+    owner: hdfs
+    group: hadoop
+    mode: 0440
+   when: security != "none" and security_options.http_authentication|default(false)
 
-    - name: Copy atlas properties file to hive
-      copy:
-        src: /etc/atlas/conf/atlas-application.properties
-        dest: /etc/hive/conf/atlas-application.properties
-        owner: root
-        group: root
-        mode: 0777 
+ - name: Copy atlas properties file to hive
+   copy:
+    src: /etc/atlas/conf/atlas-application.properties
+    dest: /etc/hive/conf/atlas-application.properties
+    owner: root
+    group: root
+    mode: 0777 
+    remote_src: yes

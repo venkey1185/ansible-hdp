@@ -1,0 +1,48 @@
+---
+- name: Update repositories
+  yum:
+     name=*
+     state=latest
+
+- name: Install prerequisites
+  yum:
+    name={{ item }}
+    state=latest
+  with_items:
+    - cyrus-sasl
+    - cyrus-sasl-plain
+    - cyrus-sasl-gssapi
+    - krb5-libs
+    - libcurl
+    - libpcap
+    - net-snmp
+    - openldap
+    - openssl
+    - ca-certificates
+  when: ansible_distribution == 'RedHat'
+
+- name: Create mongodb user
+  user: name={{ mongodb_user }} createhome=no
+
+- name: Copy trusted CA PEM Key File
+  copy: src={{ role_path }}/../../sp3_{{ envtier_string }}_{{ envinstance_string }}/group_vars/files/vmca01.pem dest={{ mongodb_cacert_path }} owner={{ mongodb_user }} group={{ mongodb_user }} mode=0600
+
+- name: Enable the dynamic CA configuration feature
+  command: update-ca-trust force-enable
+
+- name: Add CA as a new file for updating trust
+  copy: src={{ role_path }}/../../sp3_{{ envtier_string }}_{{ envinstance_string }}/group_vars/files/vmca01.pem dest=/etc/pki/ca-trust/source/anchors/ owner={{ mongodb_user }} group={{ mongodb_user }} mode=0600
+
+- name: Update CA trust
+  command: update-ca-trust extract
+
+- name: Install Automation Agent
+  include: install-agent.yml
+
+- name: Configure thru Ops Manager API
+  include: opsmgr-api.yml
+  when: ( mongodb_opsmgr_api_key != ""
+        and inventory_hostname == mongodb_master_node )
+
+- name: disable_THP
+  include: disable_THP.yml

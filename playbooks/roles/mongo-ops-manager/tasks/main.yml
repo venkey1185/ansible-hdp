@@ -1,0 +1,173 @@
+---
+
+- name: Create a new file
+  file: path=/etc/yum.repos.d/mongodb-org-3.6.repo state=touch
+
+- name: update mongodb-org-3.6.repo entries for port and max connections.
+  lineinfile:
+    dest: "/etc/yum.repos.d/mongodb-org-3.6.repo"
+    line: "{{ item }}"
+  with_items:
+    - "[mongodb-org-3.6]"
+    - "name=MongoDB Repository"
+    - "baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/x86_64/"
+    - "gpgcheck=1"
+    - "enabled=1"
+    - "gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc"
+  tags: [mongodb-org-3.6]
+
+- name: Install MongoDB install MongoDB packages
+  yum: name=mongodb-org state=present
+
+- name: Configure Ops Manager app mongod-opsmanager-app.conf
+  template: src=mongod.conf.j2 dest={{ mongo_ops_manager_appdb_conf }} force=yes owner=mongod group=mongod mode=0755
+  vars:
+    mongod_conf_port: "{{ mongo_ops_manager_appdb_port }}"
+    mongod_conf_pid_file_path: "{{ mongo_ops_manager_appdb_pid_file_path }}"
+    mongod_conf_rs_name: "{{ mongo_ops_manager_appdb_rs_name }}"
+    mongod_conf_db_path: "{{ mongo_ops_manager_appdb_dir }}"
+    mongod_conf_log_path: "{{ mongo_ops_manager_appdb_log_dir }}"
+  tags: [mongodb]
+
+- name: Configure Ops Manager backup mongod-opsmanager-backup.conf
+  template: src=mongod.conf.j2 dest={{ mongo_ops_manager_backupdb_conf }} force=yes owner=mongod group=mongod mode=0755
+  vars:
+    mongod_conf_port: "{{ mongo_ops_manager_backupdb_port }}"
+    mongod_conf_pid_file_path: "{{ mongo_ops_manager_backupdb_pid_file_path }}"
+    mongod_conf_rs_name: "{{ mongo_ops_manager_backupdb_rs_name }}"
+    mongod_conf_db_path: "{{ mongo_ops_manager_backupdb_dir }}"
+    mongod_conf_log_path: "{{ mongo_ops_manager_backupdb_log_dir }}"
+  tags: [mongodb]
+
+- name: Configure Ops Manager app MongoDB service
+  template: src=mongod.service.j2 dest={{ mongo_ops_manager_appdb_service_config }} force=yes owner=root group=root mode=0644
+  vars:
+    mongod_service_conf: "{{ mongo_ops_manager_appdb_conf }}"
+    mongod_service_pid_file_path: "{{ mongo_ops_manager_appdb_pid_file_path }}"
+  tags: [mongodb]
+
+- name: Configure Ops Manager backup MongoDB service
+  template: src=mongod.service.j2 dest={{ mongo_ops_manager_backupdb_service_config }} force=yes owner=root group=root mode=0644
+  vars:
+    mongod_service_conf: "{{ mongo_ops_manager_backupdb_conf }}"
+    mongod_service_pid_file_path: "{{ mongo_ops_manager_backupdb_pid_file_path }}"
+  tags: [mongodb]
+
+- name: Create Ops Manager app data directory
+  file: state=directory recurse=yes dest={{ mongo_ops_manager_appdb_dir }} owner=mongod group=mongod mode=0755
+  tags: [mongodb]
+
+- name: Create Ops Manager backup directory
+  file: state=directory recurse=yes dest={{ mongo_ops_manager_backupdb_dir }} owner=mongod group=mongod mode=0755
+  tags: [mongodb]
+
+- name: Create Ops Manager app log directory
+  file: state=directory recurse=yes dest={{ mongo_ops_manager_appdb_log_dir }} owner=mongod group=mongod mode=0755
+  tags: [mongodb]
+
+- name: Create Ops Manager backup log directory
+  file: state=directory recurse=yes dest={{ mongo_ops_manager_backupdb_log_dir }} owner=mongod group=mongod mode=0755
+  tags: [mongodb]
+
+- name: Set SELinux permission for Ops Manager app data directory
+  shell: chcon -Rv --type=mongod_var_lib_t {{ mongo_ops_manager_appdb_dir }}
+  when: ansible_distribution == 'RedHat'
+  tags: [mongodb]
+
+- name: Set SELinux permission for Ops Manager backup directory
+  shell: chcon -Rv --type=mongod_var_lib_t {{ mongo_ops_manager_backupdb_dir }}
+  when: ansible_distribution == 'RedHat'
+  tags: [mongodb]
+
+- name: Set SELinux permission for Ops Manager app log directory
+  shell: chcon -Rv --type=mongod_log_t {{ mongo_ops_manager_appdb_log_dir }}
+  when: ansible_distribution == 'RedHat'
+  tags: [mongodb]
+
+- name: Set SELinux permission for Ops Manager backup log directory
+  shell: chcon -Rv --type=mongod_log_t {{ mongo_ops_manager_backupdb_log_dir }}
+  when: ansible_distribution == 'RedHat'
+  tags: [mongodb]
+
+- name: Set SELinux permission for MongoDB Ops Manager app DB port
+  shell: semanage port -a -t mongod_port_t -p tcp {{ mongo_ops_manager_appdb_port }}
+  when: ansible_distribution == 'RedHat'
+  ignore_errors: yes
+  tags: [mongodb]
+
+- name: Set SELinux permission for MongoDB Ops Manager backup DB port
+  shell: semanage port -a -t mongod_port_t -p tcp {{ mongo_ops_manager_backupdb_port }}
+  when: ansible_distribution == 'RedHat'
+  ignore_errors: yes
+  tags: [mongodb]
+
+- name: Give ownership permissions on the data directory
+  file: path=/data owner=mongod group=mongod state=directory recurse=yes
+  tags: [mongodb]
+
+- name: Start Ops Manager app MongoDB service
+  service: name={{ mongo_ops_manager_appdb }} state=started
+  tags: [mongodb]
+
+- name: Start Ops Manager data MongoDB service
+  service: name={{ mongo_ops_manager_backupdb }} state=started
+  tags: [mongodb]
+
+- name: Ensure Ops Manager app MongoDB service starts on boot
+  command: chkconfig {{ mongo_ops_manager_appdb }} on
+  tags: [mongodb]
+
+- name: Ensure Ops Manager app MongoDB service starts on boot
+  command: chkconfig {{ mongo_ops_manager_backupdb }} on
+  tags: [mongodb]
+
+- name: Initiate Ops Manager app database replica set
+  command: >-
+    mongo "127.0.0.1:{{ mongo_ops_manager_appdb_port }}" --quiet --eval 'rs.initiate({ _id : "{{ mongo_ops_manager_appdb_rs_name }}", members: [ {% for host in groups['mongo-ops-manager'] %} {% if loop.index == loop.length %} { _id: {{ loop.index0 }}, host: "{{ host }}:{{ mongo_ops_manager_appdb_port }}" } {% else %} { _id: {{ loop.index0 }}, host: "{{ host }}:{{ mongo_ops_manager_appdb_port }}" }, {% endif %} {% endfor %} ] })'
+  register: rs_app_result
+  when: inventory_hostname in groups['mongo-ops-manager']
+  tags: [mongodb]
+
+- name: Initiate Ops Manager app database replica set... Wait!
+  pause: seconds=15
+  when: rs_app_result.changed
+  tags: [mongodb]
+
+- name: Initiate Ops Manager backup database replica set
+  command: >-
+    mongo "127.0.0.1:{{ mongo_ops_manager_backupdb_port }}" --quiet --eval 'rs.initiate({ _id : "{{ mongo_ops_manager_backupdb_rs_name }}", members: [ {% for host in groups['mongo-ops-manager'] %} {% if loop.index == loop.length %} { _id: {{ loop.index0 }}, host: "{{ host }}:{{ mongo_ops_manager_backupdb_port }}" } {% else %} { _id: {{ loop.index0 }}, host: "{{ host }}:{{ mongo_ops_manager_backupdb_port }}" }, {% endif %} {% endfor %} ] })'
+  register: rs_backup_result
+  when: inventory_hostname in groups['mongo-ops-manager']
+  tags: [mongodb]
+
+- name: Initiate Ops Manager backup database replica set... Wait!
+  pause: seconds=15
+  when: rs_backup_result.changed
+  tags: [mongodb]
+
+- name: Download and install Ops Manager
+  yum: name={{ mongodb_ops_manager_binary }} state=present
+  tags: [opsmanager]
+
+- name: Configure Ops Manager - configure properties file
+  template: src=conf-mms.properties.j2 dest=/opt/mongodb/mms/conf/conf-mms.properties
+
+- name: Configure Ops Manager - uncompress dump file
+  unarchive: src=dump.tar dest=/tmp
+  tags: [opsmanager]
+
+- name: Configure Ops Manager - restore from dump
+  command: mongorestore -h {{ mongo_ops_manager_appdb_rs_name }}/{{ mongo_ops_manager_appdb_rs_servers }} /tmp/dump
+  when: inventory_hostname in groups['mongo-ops-manager']
+  tags: [opsmanager]
+
+- name: Configure Ops Manager - configure url
+  command: mongo --host {{ mongo_ops_manager_appdb_rs_name }}/{{ mongo_ops_manager_appdb_rs_servers }} --eval "db.getSiblingDB('cloudconf').getCollection('config.appState').update({'_id':'AppSettings.Global.mms.centralUrl'}, {'value':'{{ mongo_ops_manager_url }}'},{upsert:true})"
+  when: inventory_hostname in groups['mongo-ops-manager']
+  tags: [opsmanager]
+
+
+- name: Start Ops Manager
+  service: name=mongodb-mms state=started
+  tags: [opsmanager]
+

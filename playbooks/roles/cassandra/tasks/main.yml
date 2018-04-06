@@ -1,0 +1,72 @@
+---
+
+- name: Create a new file
+  file: path=/etc/yum.repos.d/mongodb-org-3.6.repo state=touch
+  
+- name: update my.conf entries for port and max connections.
+  lineinfile:
+    dest: "/etc/yum.repos.d/mongodb-org-3.6.repo"
+    backup: yes
+    line: "{{ item }}"
+  with_items:
+    - "name=MongoDB Repository"
+    - "baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/x86_64/"
+        - "gpgcheck=1"
+        - "enabled=1"
+        - "gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc"
+  tags: [mongodb-org-3.6]
+
+- name: install cassandra
+  yum:
+    name: "mongodb-org"
+    state: "present"
+        
+- name: execute command
+  shell: "semanage port -a -t mongod_port_t -p tcp 27017"
+  ignore_errors: "true"
+  
+- name: update config entries for port and max connections.
+  lineinfile:
+    dest: "/etc/selinux/config"
+    backup: yes
+    line: "{{ item }}"
+  with_items:
+    - "SELINUX=disabled"
+        - "SELINUX=permissive"
+        
+- name: update mongod.conf entries for port and max connections.
+  lineinfile:
+    dest: "/etc/mongod.conf"
+    backup: yes
+    line: "{{ item }}"
+  with_items:
+    - "mkdir /mongo"
+        - "mkdir /mongo/data/mongo/log"
+        - "dbPath: /mongo/data"
+        - "path: /mongo/log/mongod.log"
+
+- name: execute command
+  shell: "grep bind /etc/mongod.conf"
+  ignore_errors: "true"
+
+
+- name: start  the mongod service
+  service: 
+    name: "mongod" 
+    state: "started" 
+    enabled: "yes"
+
+- name: execute command
+  shell: "sudo chkconfig mongod on"
+  ignore_errors: "true"
+
+- name: create a mysql user
+  mysql_user:
+    name: "admin"
+    password: 'Mongo123'
+    host: "%"
+    priv: "*.*:ALL PRIVILEGES"
+    state: "present"
+    login_user: 'admin'
+    login_password: 'Mongo123'
+    login_port: "27017"

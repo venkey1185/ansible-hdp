@@ -7,3 +7,10 @@
   become: yes
   roles:
     - post-install
+
+- name: Apply the post-install role to the ambari-server group
+  hosts: ambari-server
+  any_errors_fatal: true
+  become: yes
+  roles:
+    - ambari-post

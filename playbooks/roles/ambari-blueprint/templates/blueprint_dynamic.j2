@@ -311,22 +311,23 @@
     },
 	{
       "kms-properties" : {
-	    {% if database == "mysql" or database == "mariadb" -%}
+       {% if database == "mysql" or database == "mariadb" -%}
         "DB_FLAVOR": "MYSQL",
         "db_user": "{{ database_options.rangerkms_db_username }}",
         "db_password": "{{ database_options.rangerkms_db_password }}",
         "db_name": "{{ database_options.rangerkms_db_name }}",
-	    "db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}",
+        "db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}",
         {% endif -%}
         {% if database == "postgres" -%}
         "DB_FLAVOR": "POSTGRES",
         "db_user": "{{ database_options.rangerkms_db_username }}",
         "db_password": "{{ database_options.rangerkms_db_password }}",
         "db_name": "{{ database_options.rangerkms_db_name }}",
-	    "db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ postgres_port }}",
+        "db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ postgres_port }}",
         {% endif -%}
         "db_root_user": "root",
         "db_root_password": "",
+        "ranger.ks.jpa.jdbc.url": "jdbc:mysql://{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}/{{ database_options.rangerkms_db_name }}",
         "kms_master_key_password": "kmsadmin123",
         "SQL_CONNECTOR_JAR" : "/usr/share/java/mysql-connector-java.jar",
         "REPOSITORY_CONFIG_USERNAME" : "keyadmin"
@@ -566,18 +567,18 @@
         "storm.zookeeper.retry.intervalceiling.millis" : "30000"
       }
     },
-	{
-	"kafka-broker" : {
-          "advertised.host.name" : "{{ public_ip.stdout }}",
-          "host.name" : "0.0.0.0",
-          "port" : "6667",
-          "listeners" : "PLAINTEXT://0.0.0.0:6667",
-          "advertised.port" : "6667",
-		  {% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
-        "authorizer.class.name" : "org.apache.ranger.authorization.kafka.authorizer.RangerKafkaAuthorizer",
-{% endif %}
+    {
+     "kafka-broker" : {
+       "advertised.host.name" : "{{ public_ip }}",
+       "host.name" : "0.0.0.0",
+       "port" : "6667",
+       "listeners" : "PLAINTEXT://0.0.0.0:6667",
+       "advertised.port" : "6667",
+       {% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
+       "authorizer.class.name" : "org.apache.ranger.authorization.kafka.authorizer.RangerKafkaAuthorizer",
+       {% endif %}
         "zookeeper.session.timeout.ms" : "30000",
-		"zookeeper.connect" : "{% for zk in zookeeper_groups %}%HOSTGROUP::{{ zk }}%:2181{% if not loop.last %},{% endif %}{% endfor %}",
+        "zookeeper.connect" : "{% for zk in zookeeper_groups %}%HOSTGROUP::{{ zk }}%:2181{% if not loop.last %},{% endif %}{% endfor %}"
        }
     },
     {
@@ -587,31 +588,14 @@
     },
     {
     "kafka-env" : {
-          "kafka_pid_dir" : "/var/run/kafka",
-          "kafka_user_nofile_limit" : "128000",
-          "kafka_log_dir" : "/var/log/kafka",
-          "kafka_user_nproc_limit" : "65536",
-          "content" : "\n#!/bin/bash\n\n# Set KAFKA specific environment variables here.\n\n# The java implementation to use.\nexport JAVA_HOME={{java64_home}}\nexport PATH=$PATH:$JAVA_HOME/bin\nexport PID_DIR={{kafka_pid_dir}}\nexport LOG_DIR={{kafka_log_dir}}\n{% if security_enabled %}\nexport KAFKA_KERBEROS_PARAMS=\"-Djavax.security.auth.useSubjectCredsOnly=false {{kafka_kerberos_params}}\"\n{% else %}\nexport KAFKA_KERBEROS_PARAMS={{kafka_kerberos_params}}\n{% endif %}\n# Add kafka sink to classpath and related depenencies\nif [ -e \"/usr/lib/ambari-metrics-kafka-sink/ambari-metrics-kafka-sink.jar\" ]; then\n  export CLASSPATH=$CLASSPATH:/usr/lib/ambari-metrics-kafka-sink/ambari-metrics-kafka-sink.jar\n  export CLASSPATH=$CLASSPATH:/usr/lib/ambari-metrics-kafka-sink/lib/*\nfi\nif [ -f /etc/kafka/conf/kafka-ranger-env.sh ]; then\n. /etc/kafka/conf/kafka-ranger-env.sh\nfi",
-          "is_supported_kafka_ranger" : "true",
-          "kafka_user" : "kafka"
-    },
-    {
-      "tagsync-application-properties" : {
-         "atlas.kafka.bootstrap.servers" :  "{{ hostvars[rangeradmin_hosts|sort|list|first]['ansible_fqdn'] %:6667",
-          "atlas.kafka.entities.group.id" : "ranger_entities_consumer",
-          "atlas.kafka.zookeeper.connect" : "{% for zk in zookeeper_groups %}%HOSTGROUP::{{ zk }}%:2181{% if not loop.last %},{% endif %}{% endfor %}",
-       }
-    },
-	{
-      "kafka-logsearch-conf" : {
-        "properties_attributes" : { },
-        "properties" : {
-          "component_mappings" : "KAFKA_BROKER:kafka_server,kafka_request,kafka_logcleaner,kafka_controller,kafka_statechange",
-          "content" : "\n{\n  \"input\":[\n    {\n      \"type\":\"kafka_controller\",\n      \"rowtype\":\"service\",\n      \"path\":\"{{default('/configurations/kafka-env/kafka_log_dir', '/var/log/kafka')}}/controller.log\"\n    },\n    {\n      \"type\":\"kafka_request\",\n      \"rowtype\":\"service\",\n      \"path\":\"{{default('/configurations/kafka-env/kafka_log_dir', '/var/log/kafka')}}/kafka-request.log\"\n    },\n    {\n      \"type\":\"kafka_logcleaner\",\n      \"rowtype\":\"service\",\n      \"path\":\"{{default('/configurations/kafka-env/kafka_log_dir', '/var/log/kafka')}}/log-cleaner.log\"\n    },\n    {\n      \"type\":\"kafka_server\",\n      \"rowtype\":\"service\",\n      \"path\":\"{{default('/configurations/kafka-env/kafka_log_dir', '/var/log/kafka')}}/server.log\"\n    },\n    {\n      \"type\":\"kafka_statechange\",\n      \"rowtype\":\"service\",\n      \"path\":\"{{kafka_log_dir}}/state-change.log\"\n    }\n   ],\n  \"filter\":[\n    {\n      \"filter\":\"grok\",\n      \"conditions\":{\n        \"fields\":{\n          \"type\":[\n            \"kafka_controller\",\n            \"kafka_request\",\n            \"kafka_logcleaner\"\n          ]\n         }\n       },\n      \"log4j_format\":\"[%d] %p %m (%c)%n\",\n      \"multiline_pattern\":\"^(\\\\[%{TIMESTAMP_ISO8601:logtime}\\\\])\",\n      \"message_pattern\":\"(?m)^\\\\[%{TIMESTAMP_ISO8601:logtime}\\\\]%{SPACE}%{LOGLEVEL:level}%{SPACE}\\\\[%{DATA:thread_name}\\\\]%{SPACE}%{GREEDYDATA:log_message}\",\n      \"post_map_values\":{\n        \"logtime\":{\n          \"map_date\":{\n            \"target_date_pattern\":\"yyyy-MM-dd HH:mm:ss,SSS\"\n          }\n         }\n       }\n     },\n    {\n      \"filter\":\"grok\",\n      \"comment\":\"Suppose to be same log4j pattern as other kafka processes, but some reason thread is not printed\",\n      \"conditions\":{\n        \"fields\":{\n          \"type\":[\n            \"kafka_server\",\n            \"kafka_statechange\"\n          ]\n         }\n       },\n      \"log4j_format\":\"[%d] %p %m (%c)%n\",\n      \"multiline_pattern\":\"^(\\\\[%{TIMESTAMP_ISO8601:logtime}\\\\])\",\n      \"message_pattern\":\"(?m)^\\\\[%{TIMESTAMP_ISO8601:logtime}\\\\]%{SPACE}%{LOGLEVEL:level}%{SPACE}%{GREEDYDATA:log_message}\",\n      \"post_map_values\":{\n        \"logtime\":{\n          \"map_date\":{\n            \"target_date_pattern\":\"yyyy-MM-dd HH:mm:ss,SSS\"\n          }\n         }\n       }\n     }\n   ]\n }",
-          "service_name" : "Kafka"
-        }
-      }
+       "kafka_pid_dir" : "/var/run/kafka",
+       "kafka_user_nofile_limit" : "128000",
+       "kafka_log_dir" : "/var/log/kafka",
+       "kafka_user_nproc_limit" : "65536",
+       "is_supported_kafka_ranger" : "true",
+       "kafka_user" : "kafka"
     }
+   }
   ],
 
   "host_groups" : [

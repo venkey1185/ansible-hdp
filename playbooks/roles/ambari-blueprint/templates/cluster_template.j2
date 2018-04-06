@@ -26,7 +26,7 @@
 #}
 {% if nodes is defined %}
   "host_groups" :[
-    {% for node_group in nodes if node_group.count > 0 -%}
+    {% for node_group in nodes if node_group not in ['dbhost'] and node_group.count > 0 -%}
 
     {
       "name" : "{{ node_group.role }}",

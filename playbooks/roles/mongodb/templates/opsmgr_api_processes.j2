@@ -1,0 +1,117 @@
+[
+  {
+    "args2_6": {
+      "net": {
+        "port": "{{ mongodb_net_port }}"
+      },
+      "replication": {
+        "replSetName": "{{ mongodb_replication_replset }}"
+      },
+      "storage": {
+        "dbPath": "{{ mongodb_storage_dbpath }}"
+      },
+      "systemLog": {
+        "destination": "file",
+        "path": "{{ mongodb_systemlog_path }}"
+      }
+    },
+    "hostname": "{{ mongodb_master_node }}",
+    "name": "{{ mongodb_replication_replset }}0",
+    "processType": "mongod",
+    "version": "{{ mongodb_version }}",
+    "featureCompatibilityVersion": "{{ featureCompatibilityVersion }}",
+    "authSchemaVersion": 5
+  },
+  {
+    "args2_6": {
+      "net": {
+        "port": "{{ mongodb_net_port }}"
+      },
+      "replication": {
+        "replSetName": "{{ mongodb_replication_replset }}"
+      },
+      "storage": {
+        "dbPath": "{{ mongodb_storage_dbpath }}"
+      },
+      "systemLog": {
+        "destination": "file",
+        "path": "{{ mongodb_systemlog_path }}"
+      }
+    },
+    "hostname": "{{ mongo_replica1 }}",
+    "name": "{{ mongodb_replication_replset }}1",
+    "processType": "mongod",
+    "version": "{{ mongodb_version }}",
+    "featureCompatibilityVersion": "{{ featureCompatibilityVersion }}",
+    "authSchemaVersion": 5
+  },
+  {
+    "args2_6": {
+      "net": {
+        "port": "{{ mongodb_net_port }}"
+      },
+      "replication": {
+        "replSetName": "{{ mongodb_replication_replset }}"
+      },
+      "storage": {
+        "dbPath": "{{ mongodb_storage_dbpath }}"
+      },
+      "systemLog": {
+        "destination": "file",
+        "path": "{{ mongodb_systemlog_path }}"
+      }
+    },
+    "hostname": "{{ mongo_replica2 }}",
+    "name": "{{ mongodb_replication_replset }}2",
+    "processType": "mongod",
+    "version": "{{ mongodb_version }}",
+    "featureCompatibilityVersion": "{{ featureCompatibilityVersion }}",
+    "authSchemaVersion": 5
+  },
+  {
+    "args2_6": {
+      "net": {
+        "port": "{{ mongodb_net_port }}"
+      },
+      "replication": {
+        "replSetName": "{{ mongodb_replication_replset }}"
+      },
+      "storage": {
+        "dbPath": "{{ mongodb_storage_dbpath }}"
+      },
+      "systemLog": {
+        "destination": "file",
+        "path": "{{ mongodb_systemlog_path }}"
+      }
+    },
+    "hostname": "{{ mongo_replica3 }}",
+    "name": "{{ mongodb_replication_replset }}3",
+    "processType": "mongod",
+    "version": "{{ mongodb_version }}",
+    "featureCompatibilityVersion": "{{ featureCompatibilityVersion }}",
+    "authSchemaVersion": 5
+  },
+  {
+    "args2_6": {
+      "net": {
+        "port": "{{ mongodb_net_port }}"
+      },
+      "replication": {
+        "replSetName": "{{ mongodb_replication_replset }}"
+      },
+      "storage": {
+        "dbPath": "{{ mongodb_storage_dbpath }}"
+      },
+      "systemLog": {
+        "destination": "file",
+        "path": "{{ mongodb_systemlog_path }}"
+      }
+    },
+    "hostname": "{{ mongo_replica4 }}",
+    "name": "{{ mongodb_replication_replset }}4",
+    "processType": "mongod",
+    "version": "{{ mongodb_version }}",
+    "featureCompatibilityVersion": "{{ featureCompatibilityVersion }}",
+    "authSchemaVersion": 5
+  }
+]

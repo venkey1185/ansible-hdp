@@ -39,30 +39,35 @@
           namenode_groups: "{{ namenode_groups }} + [ '{{ item.role }}' ]"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and 'NAMENODE' in item.services
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
+        no_log: True
 
       - name: Populate the resourcemanager groups list
         set_fact:
           resourcemanager_groups: "{{ resourcemanager_groups }} + [ '{{ item.role }}' ]"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and 'RESOURCEMANAGER' in item.services
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
+        no_log: True
 
       - name: Populate the journalnode groups list
         set_fact:
           journalnode_groups: "{{ journalnode_groups }} + [ '{{ item.role }}' ]"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and 'JOURNALNODE' in item.services
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
+        no_log: True
 
       - name: Populate the zookeeper groups list
         set_fact:
           zookeeper_groups: "{{ zookeeper_groups }} + [ '{{ item.role }}' ]"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and 'ZOOKEEPER_SERVER' in item.services
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
+        no_log: True
 
       - name: Populate the zookeeper hosts list
         set_fact:
           zookeeper_hosts: "{{ zookeeper_hosts }} + {{ groups[item.role] }}"
         when: groups[item.role] is defined and groups[item.role]|length > 0 and 'ZOOKEEPER_SERVER' in item.services
         with_items: "{{ hostvars[groups['ambari-server']|sort|list|first]['blueprint_dynamic'] }}"
+        no_log: True
 
       - name: Populate the hiveserver hosts list
         set_fact:

@@ -1,13 +1,13 @@
 ---
 cloud_config:
   name_suffix: ''
-  zone: 'us-central1-b'
+  zone: 'us-west1-b'
   admin_username: ambari
   ssh:
     privatekey: '~/.ssh/id_rsa'
   network:
-    name: hadoopvpc
-    subnet: hadoopnetwork
+    name: hdp-network
+    subnet: hdp-network-sub-01
     address: '192.168.0.0/16'
 
 firewall_rules:
@@ -25,30 +25,30 @@ nodes:
   - role: "hdp-master"
     count: 1
     image: centos-7
-    type: custom-4-26624
+    type: n1-highmem-4
     public_ip: true
     root_disk:
       type: pd-ssd
-      size: 20
+      size: 100
     ambari_server: true
-    haddop_cluster: true
+    hadoop_cluster: true
 
 
   - role: "hdp-slave"
     count: 2
     image: centos-7
-    type: custom-1-6656
+    type: n1-highmem-2
     public_ip: true
     root_disk:
       type: pd-ssd
-      size: 20
-    haddop_cluster: true
+      size: 100
+    hadoop_cluster: true
 
 
   - role: "hdp-edge"
     count: 0
     image: centos-7
-    type: n1-highmem-1
+    type: n1-highmem-2
     public_ip: true
     root_disk:
       type: pd-standard
@@ -63,4 +63,3 @@ nodes:
       type: pd-ssd
       size: 20
     dbhost: true
-

@@ -123,7 +123,7 @@
   when: java == "oraclejdk"
 
 - name: Run Ambari Server setup
-  shell: '{ echo y; echo y; echo ambari; echo y; echo y; echo 1; echo y; } | /usr/sbin/ambari-server setup {{ ambari_database_options|default("") }}'
+  shell: '{ echo y; echo y; echo ambari; echo y; echo y; echo 1; echo y; echo y; } | /usr/sbin/ambari-server setup {{ ambari_database_options|default("") }}'
   notify: Restart ambari-server
 
 - name: Increase the Ambari Server startup timeout

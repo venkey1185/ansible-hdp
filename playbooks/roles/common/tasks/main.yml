@@ -161,6 +161,20 @@
    dest: "/usr/hdp/2.6"
    state: link
 
+- name: Create HDP base directory
+  file:
+    path: /usr/hdp/2.6.0.3-8
+    state: directory
+    owner: root
+    group: root
+    mode: 0777
+
+- name: Create softlink to base
+  file:
+   src: "/usr/hdp/2.6.0.3-8/livy2"
+   dest: "/usr/hdp/current/livy2-server"
+   state: link
+
 - name: Make Spark as Default version & Update Java path
   lineinfile:
     dest: /etc/profile

@@ -1,0 +1,30 @@
+---
+# Installation vars
+mongodb_version: 3.4.9-ent # must specify minor version
+featureCompatibilityVersion: 3.4
+mongodb_user: mongod
+mongodb_net_port: 27600
+mongodb_storage_dbpath: /data/mongodb
+mongodb_systemlog_path: /data/mongodb/log/mongod.log
+mongodb_replication_replset: corsysrs01
+cluster_name: mongo
+mongodb_cacert_name: vmca01.pem
+mongodb_cacert_path: /etc/mongodb-mms/
+### Ops Manager variables ###
+mongodb_install_mms_agent: true
+mongodb_mms_base_url: "{{ mongo_ops_manager_url }}"
+mongodb_mms_agent_pkg: "{{ mongo_ops_manager_url }}/download/agent/automation/mongodb-mms-automation-agent-manager-latest.x86_64.rhel7.rpm"
+mongodb_mms_group_id: 59cb38a64e9f5b11aa1731ae
+mongodb_mms_api_key: 730f0ae5e62022f9707de1b3a45077bc
+mongodb_monitoring_agent_pkg: "{{ mongo_ops_manager_url }}/download/agent/monitoring/mongodb-mms-monitoring-agent-latest.x86_64.rpm"
+
+### Ops Manager API variables ###
+mongodb_opsmgr_api_user: opsmanager@corsys.com
+mongodb_opsmgr_api_key: 6f5f3e53-6443-4344-b407-89607f43c0a2
+### Host to modify automation configuration ###
+mongodb_master_node: "{{ groups['mongo-master'][0] }}"
+mongo_replica1: "{{ groups['mongo-replicas'][0] }}"
+mongo_replica2: "{{ groups['mongo-replicas'][1] }}"
+mongo_replica3: "{{ groups['mongo-replicas'][2] }}"
+mongo_replica4: "{{ groups['mongo-replicas'][3] }}"
+mmscentralUrl: "{{ mongo_ops_manager_url }}"

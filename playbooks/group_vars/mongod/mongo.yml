@@ -1,0 +1,7 @@
+mongo_ops_manager_url: "https://mgoop01.sib.net:8443"
+
+mongo_nodes_ports:
+- 22/tcp
+- 27600/tcp
+
+mongo_manager_ports:

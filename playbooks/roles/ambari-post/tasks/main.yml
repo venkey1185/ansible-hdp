@@ -1,0 +1,12 @@
+---
+- name: Create ambari home directory in hdfs
+  shell: 'sudo -u hdfs hdfs dfs -mkdir /user/ansible'
+  become_user: hdfs
+
+- name: Update Owner to ambari in HDFS
+  shell: 'sudo -u hdfs hdfs dfs -chown -R ansible:hdfs /user/ansible'
+  become_user: hdfs
+
+- name: Refresh hdfs to add ambari to User list
+  shell: 'sudo -u hdfs hdfs dfsadmin -refreshUserToGroupsMappings'
+  become_user: hdfs

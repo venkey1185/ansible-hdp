@@ -1,0 +1,24 @@
+net:
+  port: {{ mongod_conf_port }}
+  bindIp: localhost,{{ inventory_hostname }}
+
+processManagement:
+  fork: true
+  pidFilePath: {{ mongod_conf_pid_file_path }}
+
+replication:
+  replSetName: {{ mongod_conf_rs_name }}
+
+security:
+  javascriptEnabled: true
+
+storage:
+  dbPath: {{ mongod_conf_db_path }}
+  directoryPerDB: true
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: {{ mongod_conf_log_path }}/mongod.log

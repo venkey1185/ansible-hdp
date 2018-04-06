@@ -1,0 +1,39 @@
+---
+
+- name: Check for existing automation configuration file
+  stat: path=/etc/automationConfig
+  register: config_file
+  
+- name: Back up automation configuration file if exists
+  shell: mv /etc/automationConfig /etc/automationConfig-`date +%F_%R`
+  when: config_file.stat.exists
+
+- name: Retrieve automation configuration
+  shell: curl -u "{{ mongodb_opsmgr_api_user }}:{{ mongodb_opsmgr_api_key }}" "{{ mongodb_mms_base_url }}/api/public/v1.0/groups/{{ mongodb_mms_group_id }}/automationConfig" --digest -o /etc/automationConfig
+
+- name: Install jq (json parser) package
+  shell: yum install -y jq
+  
+- template:
+    src: opsmgr_api_processes.j2
+    dest: /etc/opsmgr_api_processes.tmp
+- template:
+    src: opsmgr_api_replicaSets.j2
+    dest: /etc/opsmgr_api_replicaSets.tmp
+- template:
+    src: opsmgr_api_monitoringVersions.j2
+    dest: /etc/opsmgr_api_monitoringVersions.tmp
+
+- name: Update automation configuration (processes)
+  shell: cat /etc/automationConfig | jq ".processes |= .+ `cat /etc/opsmgr_api_processes.tmp`"|tee /etc/automationConfig.1
+
+- name: Update automation configuration (replicaSets)
+  shell: cat /etc/automationConfig.1 | jq ".replicaSets |= .+ [`cat /etc/opsmgr_api_replicaSets.tmp`]" | tee /etc/automationConfig.2
+
+- name: Update monitoring agent configuration
+  shell: cat /etc/automationConfig.2 | jq ".monitoringVersions |= .+ [`cat /etc/opsmgr_api_monitoringVersions.tmp`]" | tee /etc/automationConfig
+
+- name: Send configuration to Ops Manager
+  shell: curl -u "{{ mongodb_opsmgr_api_user }}:{{ mongodb_opsmgr_api_key }}" -H "Content-Type:application/json" "{{ mongodb_mms_base_url }}/api/public/v1.0/groups/{{ mongodb_mms_group_id }}/automationConfig" --digest -i -X PUT --data @/etc/automationConfig
+  register: api_response
+  failed_when: "'HTTP/1.1 200 OK' not in api_response.stdout"

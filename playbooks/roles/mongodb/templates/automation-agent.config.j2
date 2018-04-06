@@ -1,0 +1,88 @@
+#
+# REQUIRED
+#
+# Enter your Group Id - It can be found in the Ops Manager UI under Settings ->
+# Group Settings.
+#
+mmsGroupId={{ mongodb_mms_group_id }}
+
+
+#
+# REQUIRED
+#
+# Enter your API key - It can be found in the Ops Manager UI under Settings ->
+# Group Settings.
+#
+mmsApiKey={{ mongodb_mms_api_key }}
+
+#
+# Hostname of the Ops Manager web server. The hostname will match what is used
+# to access the Ops Manager UI. The default port for an Ops Manager install
+# is 8080.
+#
+# ex. http://opsmanaager.<company>.com:8080
+mmsBaseUrl={{ mongodb_mms_base_url }}
+
+#
+# Path to log file
+#
+logFile=/var/log/mongodb-mms-automation/automation-agent.log
+
+#
+# Path to backup cluster config to
+#
+mmsConfigBackup=/var/lib/mongodb-mms-automation/mms-cluster-config-backup.json
+
+#
+# Lowest log level to log.  Can be (in order): DEBUG, ROUTINE, INFO, WARN, ERROR, DOOM
+#
+logLevel=INFO
+
+#
+# Maximum number of rotated log files
+#
+maxLogFiles=10
+
+#
+# Maximum size in bytes of a log file (before rotating)
+#
+maxLogFileSize=268435456
+
+#
+# URL to proxy all HTTP requests through
+#
+#httpProxy=
+
+#
+# Server pool key to register a server to the pool
+#
+serverPoolKey=
+
+#
+# Path to file that agent uses to keep track of data directories per group
+#
+serverPoolStateFile=/var/lib/mongodb-mms-automation/server-pool.state
+
+#
+# Path to file that contains all properties of this agent (server)
+#
+serverPoolPropertiesFile=/etc/mongodb-mms/server-pool.properties
+
+#
+# The absolute path that contains the trusted CA certificates in PEM format.
+#
+# Note: Ref. https://support.mongodb.com/case/00482189
+#       When you set a specific trusted CA file in the Automation Agent configuration, the Agent no longer utilities
+#       the System trusted CA's. The agent needs to trust both the Ops Manager server CA certificate and the Digicert
+#       certificate for downloading the latest MongoDB versions. You can either add your CA to the trusted system
+#       certificates, or add your CA certificate and any other trusted certificates into a CA bundle.
+#
+#sslTrustedMMSServerCertificate={{ mongodb_cacert_path }}{{ mongodb_cacert_name }}
+
+#
+# Specifies if the Automation Agent should validate SSL certificates presented by Ops Manager.
+#
+sslRequireValidMMSServerCertificates=true
+
+# For additional optional settings, please see
+# https://docs.opsmanager.mongodb.com/current/reference/automation-agent/

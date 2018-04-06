@@ -1,0 +1,21 @@
+---
+- name: Ensure dbpath directory
+  file: path={{ mongodb_storage_dbpath }} state=directory owner={{ mongodb_user }} recurse=yes
+
+- name: Download automation agent rpm
+  get_url: url={{ mongodb_mms_agent_pkg }} dest={{ mongodb_storage_dbpath }}/mms-agent.rpm validate_certs=no
+
+- name: Install automation agent
+  yum: name={{ mongodb_storage_dbpath }}/mms-agent.rpm state=present
+
+- file:
+    src: /lib64/libsasl2.so.3.0.0
+    dest: /lib64/libsasl2.so.2
+    state: link
+
+- name: Configure automation agent
+  template: src=automation-agent.config.j2 dest=/etc/mongodb-mms/automation-agent.config
+  notify: mongodb-mms-automation-agent restart
+
+- name: Ensure automation agent is started
+  service: name=mongodb-mms-automation-agent state=started enabled=yes

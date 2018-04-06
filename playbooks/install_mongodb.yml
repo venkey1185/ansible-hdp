@@ -1,0 +1,17 @@
+---
+
+- name: install mongodb-manager
+  hosts: mongo-ops-manager
+  any_errors_fatal: true
+  become: yes
+  become_user: root 
+  roles:
+    - mongo-ops-manager
+
+- name: Apply the ambari-server role to the ambari-server group
+  hosts: mongod
+  any_errors_fatal: true
+  become: yes
+  become_user: root
+  roles:
+    - mongodb
