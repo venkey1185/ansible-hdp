@@ -7,11 +7,25 @@
     mode: 0440
    when: security != "none" and security_options.http_authentication|default(false)
 
+ - name: Create softlink to atlas base
+   file:
+    src: "/usr/hdp/2.6.0.3-8/atlas"
+    dest: "/usr/hdp/current/atlas-client"
+    state: link
+
  - name: Copy atlas properties file to hive
    copy:
     src: /etc/atlas/conf/atlas-application.properties
     dest: /etc/hive/conf/atlas-application.properties
     owner: root
     group: root
-    mode: 0777 
+    mode: 0777
     remote_src: yes
+
+ - name: Start spark2 thrift server
+   shell: '/usr/hdp/current/spark2-thriftserver/sbin/start-thriftserver.sh'
+   ignore_errors: true
+
+ - name: Start spark thrift server
+   shell: '/usr/hdp/current/spark-thriftserver/sbin/start-thriftserver.sh'
+   ignore_errors: true
