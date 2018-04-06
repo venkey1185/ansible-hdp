@@ -161,15 +161,23 @@
    dest: "/usr/hdp/2.6"
    state: link
 
-- name: Create HDP base directory
+- name: Create Livy2 Base directory
   file:
-    path: /usr/hdp/2.6.0.3-8
+    path: /usr/hdp/2.6.0.3-8/livy2
     state: directory
     owner: root
     group: root
     mode: 0777
 
-- name: Create softlink to base
+- name: Create hdp current directory
+  file:
+    path: /usr/hdp/current
+    state: directory
+    owner: root
+    group: root
+    mode: 0777
+
+- name: Create softlink to livy2
   file:
    src: "/usr/hdp/2.6.0.3-8/livy2"
    dest: "/usr/hdp/current/livy2-server"
