@@ -123,6 +123,17 @@
     groups: wheel
     state: present
 
+- name: Create hadoop group
+  group:
+    name: hadoop
+    state: present
+
+- name: Create spark2 user
+  user:
+    name: spark2
+    groups: hadoop
+    state: present
+  
 - name: Provide sudoer privileges to ambari
   lineinfile:
     dest: /etc/sudoers
@@ -185,12 +196,20 @@
 
 - name: Create Spark2 Base directory
   file:
-    path: /etc/spark2/2.6.3.0-235/0  
+    path: /etc/spark2/2.6.3.0-235/0
     state: directory
     owner: spark2
     group: hadoop
     mode: 0777
-    
+
+- name: Create Spark2 Base directory
+  file:
+    path: /usr/hdp/2.6.3.0-235/spark2
+    state: directory
+    owner: spark2
+    group: hadoop
+    mode: 0777
+
 - name: Create Softlink from spark2 base to /usr/hdp
   file:
    src: "/etc/spark2/2.6.3.0-235/0"
@@ -202,6 +221,7 @@
    src: "/usr/hdp/current/spark2-client/conf"
    dest: "/etc/spark2/conf"
    state: link
+   state: absent
    
 - name: Make Spark as Default version & Update Java path
   lineinfile:
