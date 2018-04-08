@@ -149,7 +149,7 @@
 
 - name: Create HDP base directory
   file:
-    path: /usr/hdp/2.6.0.3-8
+    path: /usr/hdp/2.6.3.0-235
     state: directory
     owner: root
     group: root
@@ -157,13 +157,13 @@
 
 - name: Create softlink to base
   file:
-   src: "/usr/hdp/2.6.0.3-8"
+   src: "/usr/hdp/2.6.3.0-235"
    dest: "/usr/hdp/2.6"
    state: link
 
 - name: Create Livy2 Base directory
   file:
-    path: /usr/hdp/2.6.0.3-8/livy2
+    path: /usr/hdp/2.6.3.0-235/livy2
     state: directory
     owner: root
     group: root
@@ -179,7 +179,7 @@
 
 - name: Create softlink to livy2
   file:
-   src: "/usr/hdp/2.6.0.3-8/livy2"
+   src: "/usr/hdp/2.6.3.0-235/livy2"
    dest: "/usr/hdp/current/livy2-server"
    state: link
 
