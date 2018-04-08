@@ -183,6 +183,26 @@
    dest: "/usr/hdp/current/livy2-server"
    state: link
 
+- name: Create Spark2 Base directory
+  file:
+    path: /etc/spark2/2.6.3.0-235/0  
+    state: directory
+    owner: spark2
+    group: hadoop
+    mode: 0777
+    
+- name: Create Softlink from spark2 base to /usr/hdp
+  file:
+   src: "/etc/spark2/2.6.3.0-235/0"
+   dest: "/usr/hdp/2.6.3.0-235/spark2/conf"
+   state: link
+
+- name: Create softlink from /usr/hdp to /etc/spark2
+  file:
+   src: "/usr/hdp/current/spark2-client/conf"
+   dest: "/etc/spark2/conf"
+   state: link
+   
 - name: Make Spark as Default version & Update Java path
   lineinfile:
     dest: /etc/profile
