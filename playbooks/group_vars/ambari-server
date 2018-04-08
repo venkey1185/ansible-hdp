@@ -80,7 +80,6 @@ blueprint_dynamic:                                              # properties for
      - HIVE_METASTORE
      - KNOX_GATEWAY
      - SPARK2_JOBHISTORYSERVER
-     - KAFKA_BROKER
      - DRUID_COORDINATOR
      - ACCUMULO_TRACER
      - HST_SERVER
@@ -99,7 +98,7 @@ blueprint_dynamic:                                              # properties for
      - METRICS_MONITOR
      - ACCUMULO_GC
      - HBASE_MASTER
-     - ATLAS_SERVER
+     - SUPERSET
      - ZOOKEEPER_SERVER
      - DRPC_SERVER
      - MAHOUT
@@ -114,6 +113,7 @@ blueprint_dynamic:                                              # properties for
      - METRICS_COLLECTOR
      - FLUME_HANDLER
      - LIVY2_SERVER
+     - RANGER_KMS_SERVER
 
   - role: "hdp-slave"
     clients: ['SPARK2_CLIENT','INFRA_SOLR_CLIENT','TEZ_CLIENT','HST_AGENT','SLIDER','ACCUMULO_CLIENT','OOZIE_CLIENT','HBASE_REGIONSERVER','SPARK_THRIFTSERVER','SPARK_CLIENT','YARN_CLIENT','HDFS_CLIENT','FALCON_CLIENT','MAPREDUCE2_CLIENT','ATLAS_CLIENT','HBASE_CLIENT','HIVE_CLIENT','PHOENIX_QUERY_SERVER','ZOOKEEPER_CLIENT','PIG','SQOOP','HCAT']
