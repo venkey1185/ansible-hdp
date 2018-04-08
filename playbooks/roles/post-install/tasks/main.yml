@@ -9,7 +9,7 @@
 
  - name: Create softlink to atlas base
    file:
-    src: "/usr/hdp/2.6.0.3-8/atlas"
+    src: "/usr/hdp/2.6.3.0-235/atlas"
     dest: "/usr/hdp/current/atlas-client"
     state: link
 
