@@ -325,6 +325,7 @@
         "db_name": "{{ database_options.rangerkms_db_name }}",
         "db_host": "{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ postgres_port }}",
         {% endif -%}
+        "create_db_user": "false"
         "db_root_user": "root",
         "db_root_password": "",
         "ranger.ks.jpa.jdbc.url": "jdbc:mysql://{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}/{{ database_options.rangerkms_db_name }}",
