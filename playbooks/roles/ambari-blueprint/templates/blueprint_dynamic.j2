@@ -378,6 +378,7 @@
         "superset_admin_email" : "{{ superset_options.superset_email }}",
         "superset_admin_firstname" : "Ambari",
         "superset_user" : "superset"
+		"superset_admin_password": "{{ superset_options.superset_admin_passwd }}"
 	    }
 	},
 	{
@@ -633,3 +634,4 @@
       "stack_version" : "{% if namenode_groups|length > 0 %}{{ hdp_version | regex_replace('.[0-9]+.[0-9]+[0-9_-]*$','') }}{% else %}{{ hdp_version | regex_replace('.[0-9]+.[0-9]+[0-9_-]*$','') }}{% endif %}"
   }
 }
+
