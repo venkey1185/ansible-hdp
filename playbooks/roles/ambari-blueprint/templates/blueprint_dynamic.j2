@@ -184,7 +184,7 @@
 {% endif %}
     {
       "ranger-kafka-plugin-properties" : {
-        "ranger-kafka-plugin-enabled" : "Yes"
+        "ranger-kafka-plugin-enabled" : "no"
       }
     },
     {
@@ -222,7 +222,7 @@
 {% if security|lower == "mit-kdc" or security|lower == "active-directory" -%}
         "ranger-storm-plugin-enabled" : "Yes",
 {% endif %}
-        "ranger-kafka-plugin-enabled" : "Yes",
+        "ranger-kafka-plugin-enabled" : "no",
 {% endif %}
         "admin_username" : "admin",
         "admin_password" : "{{ ranger_options.ranger_admin_password }}",
@@ -328,7 +328,7 @@
         "create_db_user": "false"
         "db_root_user": "root",
         "ranger.ks.jpa.jdbc.url": "jdbc:mysql://{{ database_options.external_hostname|default(ansible_fqdn,true) }}:{{ mysql_port }}/{{ database_options.rangerkms_db_name }}",
-        "kms_master_key_password": "kmsadmin123",
+        "KMS_MASTER_KEY_PASSWD": "kmsadmin123",
         "SQL_CONNECTOR_JAR" : "/usr/share/java/mysql-connector-java.jar",
         "REPOSITORY_CONFIG_USERNAME" : "keyadmin"
         }
@@ -575,7 +575,7 @@
        "listeners" : "PLAINTEXT://0.0.0.0:6667",
        "advertised.port" : "6667",
        {% if rangeradmin_hosts|length > 0 and ranger_options.enable_plugins|default(no) %}
-       "authorizer.class.name" : "org.apache.ranger.authorization.kafka.authorizer.RangerKafkaAuthorizer",
+       "authorizer.class.name" : "",
        {% endif %}
         "zookeeper.session.timeout.ms" : "30000",
         "zookeeper.connect" : "{% for zk in zookeeper_groups %}%HOSTGROUP::{{ zk }}%:2181{% if not loop.last %},{% endif %}{% endfor %}"
@@ -633,4 +633,3 @@
       "stack_version" : "{% if namenode_groups|length > 0 %}{{ hdp_version | regex_replace('.[0-9]+.[0-9]+[0-9_-]*$','') }}{% else %}{{ hdp_version | regex_replace('.[0-9]+.[0-9]+[0-9_-]*$','') }}{% endif %}"
   }
 }
-
