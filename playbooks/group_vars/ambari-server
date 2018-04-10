@@ -21,6 +21,8 @@ database_options:
   ambari_db_name: 'ambari'
   ambari_db_username: 'ambari'
   ambari_db_password: 'bigdata'
+  root_db_user: 'root'
+  root_db_password: 'Root12'
   hive_db_name: 'hive'
   hive_db_username: 'hive'
   hive_db_password: 'hive'
@@ -66,7 +68,7 @@ blueprint_name: '{{ cluster_name }}_blueprint'                  # the name of th
 blueprint_file: 'blueprint_dynamic.j2'                          # the blueprint JSON file - 'blueprint_dynamic.j2' is a Jinja2 template that generates the required JSON
 blueprint_dynamic:                                              # properties for the dynamic blueprint - these are only used by the 'blueprint_dynamic.j2' template to generate the JSON
   - role: "hdp-master"
-    clients: ['SPARK2_CLIENT','TEZ_CLIENT','OOZIE_CLIENT','SPARK_CLIENT','HDFS_CLIENT','FALCON_CLIENT','HBASE_CLIENT','ZOOKEEPER_CLIENT','HCAT','INFRA_SOLR_CLIENT','ACCUMULO_CLIENT','YARN_CLIENT','MAPREDUCE2_CLIENT','ATLAS_CLIENT','HIVE_CLIENT','SLIDER','PIG','SQOOP','HST_AGENT','ACCUMULO_TSERVER']
+    clients: ['SPARK2_CLIENT','TEZ_CLIENT','OOZIE_CLIENT','SPARK_CLIENT','HDFS_CLIENT','FALCON_CLIENT','HBASE_CLIENT','ZOOKEEPER_CLIENT','HCAT','INFRA_SOLR_CLIENT','ACCUMULO_CLIENT','YARN_CLIENT','MAPREDUCE2_CLIENT','HIVE_CLIENT','SLIDER','PIG','SQOOP','HST_AGENT','ACCUMULO_TSERVER']
     services:
      - NODEMANAGER
      - RANGER_USERSYNC
@@ -113,10 +115,9 @@ blueprint_dynamic:                                              # properties for
      - METRICS_COLLECTOR
      - FLUME_HANDLER
      - LIVY2_SERVER
-     - RANGER_KMS_SERVER
 
   - role: "hdp-slave"
-    clients: ['SPARK2_CLIENT','INFRA_SOLR_CLIENT','TEZ_CLIENT','HST_AGENT','SLIDER','ACCUMULO_CLIENT','OOZIE_CLIENT','HBASE_REGIONSERVER','SPARK_THRIFTSERVER','SPARK_CLIENT','YARN_CLIENT','HDFS_CLIENT','FALCON_CLIENT','MAPREDUCE2_CLIENT','ATLAS_CLIENT','HBASE_CLIENT','HIVE_CLIENT','PHOENIX_QUERY_SERVER','ZOOKEEPER_CLIENT','PIG','SQOOP','HCAT']
+    clients: ['SPARK2_CLIENT','INFRA_SOLR_CLIENT','TEZ_CLIENT','HST_AGENT','SLIDER','ACCUMULO_CLIENT','OOZIE_CLIENT','HBASE_REGIONSERVER','SPARK_THRIFTSERVER','SPARK_CLIENT','YARN_CLIENT','HDFS_CLIENT','FALCON_CLIENT','MAPREDUCE2_CLIENT','HBASE_CLIENT','HIVE_CLIENT','PHOENIX_QUERY_SERVER','ZOOKEEPER_CLIENT','PIG','SQOOP','HCAT']
     services:
       - DATANODE
       - NODEMANAGER
